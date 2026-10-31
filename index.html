@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Typist</title>
+    <!-- 引入 CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 主页欢迎界面 -->
+    <div id="home-screen" class="screen active">
+        <h1>Terminal Typist</h1>
+        <p>A minimalist, offline-first typing engine.</p>
+        <div id="text-list">
+            <!-- JS 会在这里动态生成按钮 -->
+        </div>
+    </div>
+
+    <!-- 打字界面 -->
+    <div id="typing-screen" class="screen">
+        <div id="toolbar">
+            <button class="btn-small" onclick="goHome()">Back to Home</button>
+            <div id="stats">
+                <div class="stat-item">Time: <span id="time">0.0</span>s</div>
+                <div class="stat-item">Speed: <span id="wpm">0</span> WPM</div>
+                <div class="stat-item">Acc: <span id="error-rate">100</span>%</div>
+            </div>
+        </div>
+        
+        <div id="text-display"></div>
+        
+        <textarea id="input-box" placeholder="Start typing here..." spellcheck="false"></textarea>
+    </div>
+
+    <!-- 引入 JS -->
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
