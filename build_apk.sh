@@ -1,6 +1,5 @@
 #!/bin/bash
-# 注意：去掉 set -e，这样哪怕某一步报错，也能看到具体错在哪里
-# set -e
+set -e
 
 echo "========== 1. 配置环境 =========="
 export ANDROID_HOME=$PWD/android-sdk
@@ -8,8 +7,7 @@ export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 echo "========== 2. 下载并安装 Android SDK =========="
-# 换回谷歌官方源，使用 --tries=3 防止偶尔断流
-wget -q --tries=3 https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
+wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
 unzip -q cmdtools.zip
 mkdir -p $ANDROID_HOME/cmdline-tools
 mv cmdline-tools $ANDROID_HOME/cmdline-tools/latest
@@ -94,9 +92,9 @@ android.useAndroidX=true
 EOF
 
 echo "========== 5. 开始编译 APK =========="
-wget -q --tries=3 https://services.gradle.org/distributions/gradle-8.1.0-bin.zip -O gradle.zip
-unzip -q gradle.zip
-./gradle-8.1.0/bin/gradle wrapper --gradle-version 8.1.0
+# 直接使用系统自带的 Gradle，不再手动下载！
+gradle wrapper --gradle-version 8.1.0
+chmod +x ./gradlew
 ./gradlew assembleDebug
 
 echo "========== 编译成功！ =========="
