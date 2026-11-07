@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 }
 EOF
 
-# 写入 Gradle 配置（彻底锁死版本）
+# 写入 App 的 Gradle 配置
 cat > app/build.gradle << 'EOF'
 apply plugin: 'com.android.application'
 android {
@@ -76,6 +76,7 @@ android {
 }
 EOF
 
+# 写入根目录的 Gradle 配置
 cat > build.gradle << 'EOF'
 buildscript {
     repositories { google(); mavenCentral() }
@@ -91,21 +92,11 @@ cat > gradle.properties << 'EOF'
 android.useAndroidX=true
 EOF
 
-# 终极降级：下载 Gradle 7.6 (极其稳定，兼容性最好)
-cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
-distributionBase=GRADLE_USER_HOME
-distributionPath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-7.6-bin.zip
-networkTimeout=10000
-zipStoreBase=GRADLE_USER_HOME
-zipStorePath=wrapper/dists
-EOF
-
-mkdir -p gradle/wrapper
-
 echo "========== 5. 开始编译 APK =========="
-# 使用系统自带的 gradle 生成 wrapper，然后调用 wrapper 编译
+# 让系统自带的 gradle 去下载并生成 7.6 版本的 wrapper
 gradle wrapper --gradle-version 7.6
+
+# 赋予权限，开始编译
 chmod +x ./gradlew
 ./gradlew assembleDebug
 
