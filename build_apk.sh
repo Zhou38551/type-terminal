@@ -26,6 +26,7 @@ else
     exit 1
 fi
 
+# 写入 Manifest
 cat > app/src/main/AndroidManifest.xml << 'EOF'
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.zhou38551.typeterminal">
@@ -40,6 +41,7 @@ cat > app/src/main/AndroidManifest.xml << 'EOF'
 </manifest>
 EOF
 
+# 写入 MainActivity
 cat > app/src/main/java/com/zhou38551/typeterminal/MainActivity.java << 'EOF'
 package com.zhou38551.typeterminal;
 import android.app.Activity;
@@ -58,6 +60,7 @@ public class MainActivity extends Activity {
 }
 EOF
 
+# 写入 Gradle 配置（彻底锁死版本）
 cat > app/build.gradle << 'EOF'
 apply plugin: 'com.android.application'
 android {
@@ -88,8 +91,22 @@ cat > gradle.properties << 'EOF'
 android.useAndroidX=true
 EOF
 
+# 终极降级：下载 Gradle 7.6 (极其稳定，兼容性最好)
+cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-7.6-bin.zip
+networkTimeout=10000
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+EOF
+
+mkdir -p gradle/wrapper
+
 echo "========== 5. 开始编译 APK =========="
-# 核心绝杀：直接用服务器预装的 gradle，一分钱不花，一秒不卡
-gradle assembleDebug
+# 使用系统自带的 gradle 生成 wrapper，然后调用 wrapper 编译
+gradle wrapper --gradle-version 7.6
+chmod +x ./gradlew
+./gradlew assembleDebug
 
 echo "========== 编译成功！ =========="
