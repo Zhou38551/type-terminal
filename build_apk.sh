@@ -93,11 +93,14 @@ android.useAndroidX=true
 EOF
 
 echo "========== 5. 开始编译 APK =========="
-# 让系统自带的 gradle 去下载并生成 7.6 版本的 wrapper
-gradle wrapper --gradle-version 7.6
+# 强行下载并指定使用 Gradle 8.1.0，绝不用系统自带的 9.x
+wget -q https://services.gradle.org/distributions/gradle-8.1.0-bin.zip -O gradle-8.1.0.zip
+unzip -q gradle-8.1.0.zip
 
-# 赋予权限，开始编译
-chmod +x ./gradlew
-./gradlew assembleDebug
+# 赋予执行权限，并使用刚刚下载的版本进行打包
+chmod +x ./gradle-8.1.0/bin/gradle
+./gradle-8.1.0/bin/gradle assembleDebug
+
+echo "========== 编译成功！ =========="
 
 echo "========== 编译成功！ =========="
