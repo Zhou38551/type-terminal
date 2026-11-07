@@ -92,9 +92,14 @@ android.useAndroidX=true
 EOF
 
 echo "========== 5. 开始编译 APK =========="
-# 直接使用系统自带的 Gradle，不再手动下载！
-gradle wrapper --gradle-version 8.1.0
-chmod +x ./gradlew
-./gradlew assembleDebug
+# 下载专属的 Gradle 8.1.0，绝不使用系统自带的 9.x 版本
+wget -q https://services.gradle.org/distributions/gradle-8.1.0-bin.zip -O gradle.zip
+unzip -q gradle.zip
+
+# 将下载的 Gradle 加入环境变量并编译
+export PATH=$PWD/gradle-8.1.0/bin:$PATH
+gradle assembleDebug
+
+echo "========== 编译成功！ =========="
 
 echo "========== 编译成功！ =========="
