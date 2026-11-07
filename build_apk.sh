@@ -1,21 +1,20 @@
 #!/bin/bash
-set -e
+# 注意：去掉 set -e，这样哪怕某一步报错，也能看到具体错在哪里
+# set -e
 
 echo "========== 1. 配置环境 =========="
-export SDK_TEST_BASE_URL="https://mirrors.cloud.tencent.com/AndroidSDK/"
 export ANDROID_HOME=$PWD/android-sdk
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 echo "========== 2. 下载并安装 Android SDK =========="
-# 强制指定不要走谷歌源，用腾讯云
-wget -q https://mirrors.cloud.tencent.com/AndroidSDK/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
+# 换回谷歌官方源，使用 --tries=3 防止偶尔断流
+wget -q --tries=3 https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
 unzip -q cmdtools.zip
 mkdir -p $ANDROID_HOME/cmdline-tools
 mv cmdline-tools $ANDROID_HOME/cmdline-tools/latest
 
 echo "========== 3. 接受许可并安装构建工具 =========="
-# 这一步最容易卡死，加入超时限制
 yes | sdkmanager "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
 
 echo "========== 4. 生成原生安卓工程 =========="
@@ -95,8 +94,7 @@ android.useAndroidX=true
 EOF
 
 echo "========== 5. 开始编译 APK =========="
-# 关键：换成腾讯云的 Gradle 镜像（或者直接从官方下，如果不卡的话）
-wget -q https://services.gradle.org/distributions/gradle-8.1.0-bin.zip -O gradle.zip
+wget -q --tries=3 https://services.gradle.org/distributions/gradle-8.1.0-bin.zip -O gradle.zip
 unzip -q gradle.zip
 ./gradle-8.1.0/bin/gradle wrapper --gradle-version 8.1.0
 ./gradlew assembleDebug
