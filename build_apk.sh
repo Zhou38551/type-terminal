@@ -26,7 +26,6 @@ else
     exit 1
 fi
 
-# 写入 Manifest
 cat > app/src/main/AndroidManifest.xml << 'EOF'
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.zhou38551.typeterminal">
@@ -41,7 +40,6 @@ cat > app/src/main/AndroidManifest.xml << 'EOF'
 </manifest>
 EOF
 
-# 写入 MainActivity
 cat > app/src/main/java/com/zhou38551/typeterminal/MainActivity.java << 'EOF'
 package com.zhou38551.typeterminal;
 import android.app.Activity;
@@ -60,7 +58,6 @@ public class MainActivity extends Activity {
 }
 EOF
 
-# 写入 Gradle 配置
 cat > app/build.gradle << 'EOF'
 apply plugin: 'com.android.application'
 android {
@@ -92,14 +89,7 @@ android.useAndroidX=true
 EOF
 
 echo "========== 5. 开始编译 APK =========="
-# 放弃 wget，使用 curl -L 自动处理重定向下载
-curl -sL -o gradle.zip https://services.gradle.org/distributions/gradle-8.1.0-bin.zip
-unzip -q gradle.zip
-
-# 将下载的 Gradle 直接解压，加入环境变量
-export PATH=$PWD/gradle-8.1.0/bin:$PATH
-
-# 直接调用下载好的 gradle 编译，不再生成 wrapper
+# 核心绝杀：直接用服务器预装的 gradle，一分钱不花，一秒不卡
 gradle assembleDebug
 
 echo "========== 编译成功！ =========="
